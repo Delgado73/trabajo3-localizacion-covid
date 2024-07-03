@@ -15,24 +15,19 @@ public class ListaContactos {
 	 */
 	public void insertarNodoTemporal(PosicionPersona p) {
 		NodoTemporal aux = lista, ant = null;
+		boolean encontrado = false;
+
 		while (aux != null && aux.getFecha().compareTo(p.getFechaPosicion()) < 0) {
 			ant = aux;
 			aux = aux.getSiguiente();
 		}
+
 		if (aux != null && aux.getFecha().compareTo(p.getFechaPosicion()) == 0) {
-			NodoPosicion np = aux.getListaCoordenadas(), npAnt = null;
-			while (np != null && !np.getCoordenada().equals(p.getCoordenada())) {
-				npAnt = np;
-				np = np.getSiguiente();
-			}
-			if (np != null) {
-				np.setNumPersonas(np.getNumPersonas() + 1);
-			} else {
-				NodoPosicion nuevoNp = new NodoPosicion(p.getCoordenada(), 1, null);
-				if (npAnt == null) aux.setListaCoordenadas(nuevoNp);
-				else npAnt.setSiguiente(nuevoNp);
-			}
-		} else {
+			encontrado = true;
+			insertarEnListaCoordenadas(aux, p);
+		}
+
+		if (!encontrado) {
 			NodoTemporal nuevo = new NodoTemporal();
 			nuevo.setFecha(p.getFechaPosicion());
 			nuevo.setListaCoordenadas(new NodoPosicion(p.getCoordenada(), 1, null));
@@ -40,6 +35,21 @@ public class ListaContactos {
 			if (ant == null) lista = nuevo;
 			else ant.setSiguiente(nuevo);
 			this.size++;
+		}
+	}
+
+	private void insertarEnListaCoordenadas(NodoTemporal aux, PosicionPersona p) {
+		NodoPosicion np = aux.getListaCoordenadas(), npAnt = null;
+		while (np != null && !np.getCoordenada().equals(p.getCoordenada())) {
+			npAnt = np;
+			np = np.getSiguiente();
+		}
+		if (np != null) {
+			np.setNumPersonas(np.getNumPersonas() + 1);
+		} else {
+			NodoPosicion nuevoNp = new NodoPosicion(p.getCoordenada(), 1, null);
+			if (npAnt == null) aux.setListaCoordenadas(nuevoNp);
+			else npAnt.setSiguiente(nuevoNp);
 		}
 	}
 
